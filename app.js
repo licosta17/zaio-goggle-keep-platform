@@ -30,8 +30,26 @@ class App {
         this.$sidebar = document.querySelector(".sidebar");
         this.$sidebarActiveItem = document.querySelector(".active-item");
 
+        this.$app = document.querySelector("#app");
+        this.$firebaseAuthContainer = document.querySelector("#firebaseui-auth-container");
+        // this.$app.style.display = "none";
+
+        // Initialize the FirebaseUI Widget using Firebase.
+        this.ui = new firebaseui.auth.AuthUI(firebase.auth);
+
+        this.handleAuth();
+
         this.addEventListeners();
         this.displayNotes();
+    }
+
+    handleAuth() {
+        this.ui.start('#firebaseui-auth-container', {
+            signInOptions: [
+              firebase.auth.EmailAuthProvider.PROVIDER_ID
+            ],
+            // Other config options...
+          });
     }
 
     addEventListeners() {
