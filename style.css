@@ -6,6 +6,11 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
+
+#app {
+    display: "none";
+}
+
 /* Hover effect */
 .material-symbols-outlined {
     padding: 10px;
@@ -89,6 +94,14 @@ input:focus {
 }
 .profile-actions-area {
     display: flex;
+}
+.profile-actions-area .tooltip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.auth-user {
+    cursor: pointer;
 }
 
 /* Main section styles */

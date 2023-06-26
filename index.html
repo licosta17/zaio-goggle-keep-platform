@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="https://ssl.gstatic.com/keep/icon_2020q4v2_128.png">
 </head>
+
 <body>
     <div id="firebaseui-auth-container"></div>
     <div id="app">
@@ -49,11 +51,12 @@
             <div class="profile-actions-area">
                 <div class="tooltip">
                     <span class="material-symbols-outlined hover">apps</span>
-                    <span class="tooltip-text">Google apps</span>
+                    <span class="tooltip-text">Google Apps</span>
                 </div>
-                <div class="tooltip">
+                <div class="tooltip logout">
                     <span class="material-symbols-outlined hover">account_circle</span>
                     <span class="tooltip-text">Google Account</span>
+                    <span class="auth-user"></span>
                 </div>
             </div>
         </nav>
@@ -228,26 +231,32 @@
         </main>
     </div>
     
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyBMo4hBJfOy12qoYLnCew8Q3zGoMCli6To",
-          authDomain: "keep-981f9.firebaseapp.com",
-          projectId: "keep-981f9",
-          storageBucket: "keep-981f9.appspot.com",
-          messagingSenderId: "78222856296",
-          appId: "1:78222856296:web:23deae7cdc8a6a4dbeebdd"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-      </script>
     
+    <!-- Import the functions you need from the SDKs you need -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- // TODO: Add SDKs for Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- // https://firebase.google.com/docs/web/setup#available-libraries -->
+    
+    <script>
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+            apiKey: "AIzaSyBMo4hBJfOy12qoYLnCew8Q3zGoMCli6To",
+            authDomain: "keep-981f9.firebaseapp.com",
+            projectId: "keep-981f9",
+            storageBucket: "keep-981f9.appspot.com",
+            messagingSenderId: "78222856296",
+            appId: "1:78222856296:web:23deae7cdc8a6a4dbeebdd"
+            };
+        
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            // const app = initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+
+            console.log(auth);
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js" integrity="sha512-AvtLzKgbVcTZJ0QZ3nLJoTGN2wiE/emjebM9xneyqhtEBRTsNB+8oeQGkOmyOF+gnJd7k3Zvnghs9m6EuTpTEw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="app.js"></script>
 </body>

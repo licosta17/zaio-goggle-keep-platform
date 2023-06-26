@@ -12,7 +12,7 @@ class App {
         // localStorage.setItem("test", JSON.stringify(["123"]));                
         // console.log(JSON.parse(localStorage.getItem("test")));
         this.notes = JSON.parse(localStorage.getItem("notes")) || [];
-        console.log(this.notes);
+        // console.log(this.notes);
         this.selectedNoteId = "";
         this.miniSidebar = true;
 
@@ -33,10 +33,11 @@ class App {
         this.$app = document.querySelector("#app");
         this.$firebaseAuthContainer = document.querySelector("#firebaseui-auth-container");
         // this.$app.style.display = "none";
-
+        this.$authUserText = document.querySelector(".auth-user");
+        this.$logoutButton = document.querySelector(".logout")
+        
         // Initialize the FirebaseUI Widget using Firebase.
-        this.ui = new firebaseui.auth.AuthUI(firebase.auth);
-
+        this.ui = new firebaseui.auth.AuthUI(auth); 
         this.handleAuth();
 
         this.addEventListeners();
@@ -44,9 +45,50 @@ class App {
     }
 
     handleAuth() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // console.log(user);
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/v8/firebase.User
+                this.$authUserText.innerHTML = user.displayName;
+                this.redirectToApp();
+                //   var uid = user.uid;
+            } else {
+                // User is signed out
+                this.redirectToAuth();
+            }
+          });
         this.ui.start('#firebaseui-auth-container', {
             signInOptions: [
               firebase.auth.EmailAuthProvider.PROVIDER_ID
+            ],
+            // Other config options...
+          });
+    }
+
+    handleLogout() {
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            this.redirectToAuth();
+          }).catch((error) => {
+            // An error happened.
+            console.log("ERROR OCCURED", error);
+          });
+    }
+
+    redirectToApp() {
+        this.$firebaseAuthContainer.style.display = "none";
+        this.$app.style.display = "block";
+    }
+
+    redirectToAuth() {
+        this.$firebaseAuthContainer.style.display = "block";
+        this.$app.style.display = "none";
+
+        this.ui.start('#firebaseui-auth-container', {
+            signInOptions: [
+              firebase.auth.EmailAuthProvider.PROVIDER_ID,
+              firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             ],
             // Other config options...
           });
@@ -77,6 +119,10 @@ class App {
         })
         this.$sidebar.addEventListener("mouseout", (event) =>{
             this.handleToggleSidebar();
+        })
+
+        this.$logoutButton.addEventListener("click", (event) => {
+            this.handleLogout();
         })
     }
 
