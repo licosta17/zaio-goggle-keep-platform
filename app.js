@@ -61,12 +61,12 @@ class App {
                 this.redirectToAuth();
             }
           });
-        this.ui.start('#firebaseui-auth-container', {
-            signInOptions: [
-              firebase.auth.EmailAuthProvider.PROVIDER_ID
-            ],
-            // Other config options...
-          });
+        // this.ui.start('#firebaseui-auth-container', {
+        //     signInOptions: [
+        //       firebase.auth.EmailAuthProvider.PROVIDER_ID
+        //     ],
+        //     // Other config options...
+        //   });
     }
 
     handleLogout() {
