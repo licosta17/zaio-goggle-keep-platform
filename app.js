@@ -11,10 +11,12 @@ class App {
         // How to store and get data from local storage
         // localStorage.setItem("test", JSON.stringify(["123"]));                
         // console.log(JSON.parse(localStorage.getItem("test")));
-        this.notes = JSON.parse(localStorage.getItem("notes")) || [];
+        // this.notes = JSON.parse(localStorage.getItem("notes")) || [];
+        this.notes = [];
         // console.log(this.notes);
         this.selectedNoteId = "";
         this.miniSidebar = true;
+        this.userId = "";
 
         this.$activeForm = document.querySelector(".active-form");
         this.$inactiveForm = document.querySelector(".inactive-form");
@@ -47,9 +49,10 @@ class App {
     handleAuth() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                // console.log(user);
+                console.log(user.uid);
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/v8/firebase.User
+                this.userId = user.uid
                 this.$authUserText.innerHTML = user.displayName;
                 this.redirectToApp();
                 //   var uid = user.uid;
@@ -79,6 +82,7 @@ class App {
     redirectToApp() {
         this.$firebaseAuthContainer.style.display = "none";
         this.$app.style.display = "block";
+        this.fetchNotesFromDB();
     }
 
     redirectToAuth() {
@@ -86,6 +90,17 @@ class App {
         this.$app.style.display = "none";
 
         this.ui.start('#firebaseui-auth-container', {
+            callbacks: {
+                signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+                  // User successfully signed in.
+                  // Return type determines whether we continue the redirect automatically
+                  // or whether we leave that to developer to handle.
+                  console.log("authResult", authResult.user.uid)
+                  this.userId = authResult.user.uid;
+                  this.$authUserText.innerHTML = user.displayName;
+                  this.redirectToApp();
+                }
+              },
             signInOptions: [
               firebase.auth.EmailAuthProvider.PROVIDER_ID,
               firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -185,7 +200,8 @@ class App {
 
     addNote({title, text}) { 
         if (text != "") {
-            const newNote = new Note(cuid(), title, text);
+            // const newNote = new Note(cuid(), title, text);
+            const newNote = { id: cuid(), title, text};
             this.notes = [...this.notes, newNote];
             this.render();           
         }
@@ -237,8 +253,44 @@ class App {
         }
     }
 
+    fetchNotesFromDB() {
+        var docRef = db.collection("users").doc(this.userId);
+
+            docRef.get().then((doc) => {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data().notes);
+                    this.notes = doc.data().notes;
+                    this.displayNotes();
+                } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                    db.collection("users").doc(this.userId).set({
+                        notes: []
+                    })
+                    .then(() => {
+                        console.log("User successfully created!");
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+                }
+            }).catch((error) => {
+                console.log("Error getting document:", error);
+            });
+    }
+
     saveNotes() {
-        localStorage.setItem("notes", JSON.stringify(this.notes))
+        // localStorage.setItem("notes", JSON.stringify(this.notes))
+        // console.log(this.userId)
+        db.collection("users").doc(this.userId).set({
+                notes: this.notes
+            })
+            .then(() => {
+                console.log("Document successfully written!");
+            })
+            .catch((error) => {
+                console.error("Error writing document: ", error);
+            });
     }
 
     render() {
